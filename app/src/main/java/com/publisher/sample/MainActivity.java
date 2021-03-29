@@ -4,6 +4,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -11,12 +15,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.vungle.warren.Banners;
 import com.vungle.warren.Vungle;
 import com.vungle.warren.AdConfig;              // Custom ad configurations
 import com.vungle.warren.InitCallback;          // Initialization callback
 import com.vungle.warren.LoadAdCallback;        // Load ad callback
 import com.vungle.warren.PlayAdCallback;        // Play ad callback
+import com.vungle.warren.VungleApiClient;
 import com.vungle.warren.VungleBanner;          // Banner
 import com.vungle.warren.VungleNativeAd;        // MREC
 import com.vungle.warren.Vungle.Consent;        // GDPR consent
@@ -24,13 +37,31 @@ import com.vungle.warren.VungleSettings;
 import com.vungle.warren.error.VungleException; // onError message
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 
 import static com.vungle.warren.Vungle.getValidPlacements;
+import static java.lang.Thread.sleep;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    Map<String, String> adMarkUp = new HashMap<>();
 
     private class VungleAd {
         @NonNull private final String name;
@@ -140,10 +171,10 @@ public class MainActivity extends AppCompatActivity {
 
     private List<VungleAd> vungleAds = new ArrayList<>();
 
-    final private String interstitialLegacy = "interstitial_legacy";
-    final private String interstitialDt = "interstitial_dt";
-    final private String rewardedVideo = "rewarded_video";
-    final private String rewardedPlayable = "rewarded_playable";
+    final private String interstitial = "interstitial_legacy";
+    final private String interstitialHeaderBidding = "interstitial_dt";
+    final private String rewarded = "rewarded_video";
+    final private String rewardedHeaderBidding = "rewarded_playable";
     final private String mrec = "mrec";
     final private String banner = "banner";
 
@@ -158,12 +189,25 @@ public class MainActivity extends AppCompatActivity {
 
         PACKAGE_NAME = getApplicationContext().getPackageName();
 
-        vungleAds.add(new VungleAd(interstitialLegacy));
-        vungleAds.add(new VungleAd(interstitialDt));
-        vungleAds.add(new VungleAd(rewardedVideo));
-        vungleAds.add(new VungleAd(rewardedPlayable));
+        vungleAds.add(new VungleAd(interstitial));
+        vungleAds.add(new VungleAd(interstitialHeaderBidding));
+        vungleAds.add(new VungleAd(rewarded));
+        vungleAds.add(new VungleAd(rewardedHeaderBidding));
         vungleAds.add(new VungleAd(mrec));
         vungleAds.add(new VungleAd(banner));
+
+        // CCPA example
+        Vungle.updateCCPAStatus(Consent.OPTED_IN);
+        Vungle.getCCPAStatus();
+        Log.d(LOG_TAG, "CCPA (pre init) - " + Vungle.getCCPAStatus());
+
+        // GDPR example
+        Vungle.updateConsentStatus(Consent.OPTED_IN, "1.0.0");
+        Vungle.getConsentStatus();
+        Vungle.getConsentMessageVersion();
+        Log.d(LOG_TAG, "GDPR (pre init) - " + Vungle.getConsentStatus() + " " + Vungle.getConsentMessageVersion());
+
+        modifyEndPoint();
 
         initUiElements();
         initSDK();
@@ -181,28 +225,40 @@ public class MainActivity extends AppCompatActivity {
                         .build();
 
         // CCPA example
-//        Vungle.updateCCPAStatus(Consent.OPTED_OUT);
-//        Vungle.getCCPAStatus();
+        Vungle.updateCCPAStatus(Consent.OPTED_OUT);
+        Vungle.getCCPAStatus();
+        Log.d(LOG_TAG, "CCPA (init success) - " + Vungle.getCCPAStatus());
 
         // GDPR example
-//        Vungle.updateConsentStatus(Consent.OPTED_OUT, "1.0.0");
-//        Vungle.getConsentStatus();
-//        Vungle.getConsentMessageVersion();
+        Vungle.updateConsentStatus(Consent.OPTED_OUT, "2.0.0");
+        Vungle.getConsentStatus();
+        Vungle.getConsentMessageVersion();
+        Log.d(LOG_TAG, "GDPR (init success) - " + Vungle.getConsentStatus() + " " + Vungle.getConsentMessageVersion());
 
         Vungle.init(appId, getApplicationContext(), new InitCallback() {
             @Override
             public void onSuccess() {
                 makeToast("Vungle SDK initialized");
+
+//                getAdMarkUp(getString(R.string.app_id), getString(R.string.placement_id_interstitial_dt));
+
                 Log.d(LOG_TAG, "InitCallback - onSuccess");
                 Log.d(LOG_TAG, "Vungle SDK Version - " + com.vungle.warren.BuildConfig.VERSION_NAME);
                 Log.d(LOG_TAG, "Valid placement list:");
+
                 for (String validPlacementReferenceIdId : getValidPlacements()) {
                     Log.d(LOG_TAG, validPlacementReferenceIdId);
                 }
 
+//                Vungle.loadAd("DYNAMIC_TEMPLATE_INTERSTITIAL-6969365", null, vungleLoadAdCallback);
+//                Vungle.loadAd("DYNAMIC_TEMPLATE_REWARDED-5271535", null, vungleLoadAdCallback);
+//                Vungle.loadAd("MREC-2191415", null, vungleLoadAdCallback);
+
                 // Set button state according to ad playability
                 for (VungleAd vungleAd : vungleAds) {
-                    if (Vungle.canPlayAd(vungleAd.placementReferenceId)) {
+                    String id = vungleAd.placementReferenceId;
+//                    getAdMarkUp(id);
+                    if (Vungle.canPlayAd(id) || Vungle.canPlayAd(id, adMarkUp.get(id))) {
                         enableButton(vungleAd.playButton);
                     } else {
                         enableButton(vungleAd.loadButton);
@@ -211,9 +267,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onError(VungleException throwable) {
-                if (throwable != null) {
-                    Log.d(LOG_TAG, "InitCallback - onError: " + throwable.getLocalizedMessage());
+            public void onError(VungleException ex) {
+                if (ex != null) {
+                    Log.d(LOG_TAG, "InitCallback - onError: " + ex.getLocalizedMessage());
                 } else {
                     Log.d(LOG_TAG, "Throwable is null");
                 }
@@ -236,6 +292,18 @@ public class MainActivity extends AppCompatActivity {
     private final PlayAdCallback vunglePlayAdCallback = new PlayAdCallback() {
         @Override
         public void onAdStart(final String placementReferenceID) {
+
+            // CCPA example
+            Vungle.updateCCPAStatus(Consent.OPTED_IN);
+            Vungle.getCCPAStatus();
+            Log.d(LOG_TAG, "CCPA (onAdStart) - " + Vungle.getCCPAStatus());
+
+            // GDPR example
+            Vungle.updateConsentStatus(Consent.OPTED_IN, "3.0.0");
+            Vungle.getConsentStatus();
+            Vungle.getConsentMessageVersion();
+            Log.d(LOG_TAG, "GDPR (onAdStart) - " + Vungle.getConsentMessageVersion() + Vungle.getConsentStatus() + " " + Vungle.getConsentMessageVersion());
+
             Log.d(LOG_TAG, "PlayAdCallback - onAdStart" +
                     "\n\tPlacement Reference ID = " + placementReferenceID);
 
@@ -244,6 +312,13 @@ public class MainActivity extends AppCompatActivity {
                 disableButton(ad.playButton);
             }
         }
+
+        @Override
+        public void creativeId(String creativeId) {
+            Log.i(LOG_TAG, "PlayAdCallback - creativeId" +
+                    "\n\tCreative ID = " + creativeId);
+        }
+
         @Override
         public void onAdViewed(String placementReferenceID) {
             Log.d(LOG_TAG, "PlayAdCallback - onAdViewed" +
@@ -284,12 +359,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void creativeId(String creativeId) {
-            Log.d(LOG_TAG, "PlayAdCallback - creativeId" +
-                    "\n\tCreative ID = " + creativeId);
-        }
-
-        @Override
         public void onError(final String placementReferenceID, VungleException throwable) {
             Log.d(LOG_TAG, "PlayAdCallback - onError" +
                     "\n\tPlacement Reference ID = " + placementReferenceID +
@@ -315,28 +384,29 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onError(final String placementReferenceID, VungleException throwable) {
+        public void onError(final String placementReferenceID, VungleException ex) {
             Log.d(LOG_TAG, "LoadAdCallback - onError" +
                     "\n\tPlacement Reference ID = " + placementReferenceID +
-                    "\n\tError = " + throwable.getLocalizedMessage());
+                    "\n\tError = " + ex.getLocalizedMessage());
 
-            makeToast(throwable.getLocalizedMessage());
-            checkInitStatus(throwable);
+            makeToast(ex.getLocalizedMessage());
+            checkInitStatus(ex);
             VungleAd ad = getVungleAd(placementReferenceID);
-            enableButton(ad.loadButton);
+            if (ad != null) {
+                enableButton(ad.loadButton);
+            }
         }
     };
 
-    private void checkInitStatus(Throwable throwable) {
+    private void checkInitStatus(VungleException ex) {
         try {
-            VungleException ex = (VungleException) throwable;
-            Log.d(LOG_TAG, ex.getExceptionCode() + "");
+            Log.d(LOG_TAG, "CheckInitStatus - " + ex.getLocalizedMessage());
 
             if (ex.getExceptionCode() == VungleException.VUNGLE_NOT_INTIALIZED) {
                 initSDK();
             }
         } catch (ClassCastException cex) {
-            Log.d(LOG_TAG, cex.getMessage());
+            Log.d(LOG_TAG, cex.getLocalizedMessage());
         }
     }
 
@@ -348,11 +418,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         switch (ad.name) {
-            case interstitialLegacy:
-            case interstitialDt:
-            case rewardedVideo:
-            case rewardedPlayable:
+            case interstitial:
                 setFullscreenAd(ad);
+            case interstitialHeaderBidding:
+                setFullscreenHeaderBiddingAd(ad);
+            case rewarded:
+                setFullscreenAd(ad);
+            case rewardedHeaderBidding:
+                setFullscreenHeaderBiddingAd(ad);
                 break;
             case mrec:
                 setNativeAd(ad);
@@ -368,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFullscreenAd(final VungleAd ad) {
         // Set custom configuration for rewarded placements
-        if (ad.name.equals(rewardedVideo) || ad.name.equals(rewardedPlayable)) {
+        if (ad.name.equals(rewarded) || ad.name.equals(rewardedHeaderBidding)) {
             setCustomRewardedFields();
         }
 
@@ -409,6 +482,52 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setFullscreenHeaderBiddingAd(final VungleAd ad) {
+        // Set custom configuration for rewarded placements
+        if (ad.name.equals(rewarded) || ad.name.equals(rewardedHeaderBidding)) {
+            setCustomRewardedFields();
+        }
+
+        ad.loadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Vungle.isInitialized()) {
+                    // Play Vungle ad
+                    getAdMarkUp(ad.placementReferenceId);
+                    Vungle.loadAd(ad.placementReferenceId, adMarkUp.get(ad.placementReferenceId), new AdConfig(), vungleLoadAdCallback);
+                    // Button UI
+                    disableButton(ad.loadButton);
+                } else {
+                    makeToast("Vungle SDK not initialized");
+                }
+            }
+        });
+
+        ad.playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setCustomRewardedFields();
+                if (Vungle.isInitialized()) {
+                    if (Vungle.canPlayAd(ad.placementReferenceId, adMarkUp.get(ad.placementReferenceId))) {
+                        final AdConfig adConfig = getAdConfig();
+
+                        // Play Vungle ad
+//                        Vungle.playAd(ad.placementReferenceId, adConfig, vunglePlayAdCallback);
+                        Vungle.playAd(ad.placementReferenceId, adMarkUp.get(ad.placementReferenceId), new AdConfig(), vunglePlayAdCallback);
+                        // Button UI
+                        enableButton(ad.loadButton);
+                        disableButton(ad.playButton);
+                    } else {
+                        makeToast("Vungle ad not playable for " + ad.placementReferenceId);
+                    }
+                } else {
+                    makeToast("Vungle SDK not initialized");
+                }
+                enableButton(ad.loadButton);
+            }
+        });
+    }
+
     private void setNativeAd(final VungleAd ad) {
         disableButton(ad.pauseResumeButton);
         disableButton(ad.closeButton);
@@ -419,7 +538,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (Vungle.isInitialized()) {
                     // Play Vungle ad
-                    Vungle.loadAd(ad.placementReferenceId, vungleLoadAdCallback);
+//                    getAdMarkUp(ad.getPlacementReferenceId(), getString(R.string.app_id));
+//                    Vungle.loadAd(ad.placementReferenceId, getAdMarkUp(), vungleLoadAdCallback);
                     // Button UI
                     disableButton(ad.loadButton);
                 } else {
@@ -443,7 +563,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (ad.name == mrec) {
                             adConfig.setAdSize(AdConfig.AdSize.VUNGLE_MREC);
-                            adConfig.setMuted(true);
+//                            adConfig.setMuted(true);
                         }
 
                         vungleNativeAd = Vungle.getNativeAd(ad.placementReferenceId, adConfig, vunglePlayAdCallback);
@@ -621,10 +741,9 @@ public class MainActivity extends AppCompatActivity {
         AdConfig adConfig = new AdConfig();
 
         adConfig.setBackButtonImmediatelyEnabled(true);
-        adConfig.setAdOrientation(AdConfig.MATCH_VIDEO);
+        adConfig.setAdOrientation(AdConfig.PORTRAIT);
 
-        adConfig.setMuted(false);
-        adConfig.setOrdinal(5);
+        adConfig.setMuted(true);
 
         return adConfig;
     }
@@ -632,7 +751,6 @@ public class MainActivity extends AppCompatActivity {
     private void setCustomRewardedFields() {
         Vungle.setIncentivizedFields("TestUser", "", "RewardedBody", "RewardedKeepWatching", "RewardedClose");
     }
-
 
     private void initUiElements() {
         Log.d(LOG_TAG, "initUiElements");
@@ -654,6 +772,83 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+    private void getAdMarkUp(String placementId) {
+        final String a = getString(R.string.app_id);
+        final String p = placementId;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String url = "https://rtb-ext-qa.api.vungle.com/bid/t/34dec8a";
+        String requestBody = "{\"app\":{\"cat\":[\"IAB3\",\"business\"],\"id\":\"ac58e7b8f4614177a53f75681fbc104a\",\"name\":\"iOS Advanced Bidding Test App\",\"publisher\":{\"id\":\"1308c11342c349e8a2934d8bb8fd33f6\",\"name\":\"Twitter\"},\"ver\":\"1.0\"},\"at\":1,\"bcat\":[\"IAB25\",\"IAB26\",\"IAB7-39\",\"IAB8-18\",\"IAB8-5\",\"IAB9-9\"],\"device\":{\"connectiontype\":2,\"dnt\":0,\"h\":1136,\"ifa\":\"4423DD36-2738-46DC-84D1-02A47F95320D1\",\"js\":1,\"language\":\"en\",\"os\":\"ios\",\"osv\":\"13\",\"pxratio\":2,\"ua\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148\",\"w\":640},\"ext\":{\"pchain\":\"74b46c0ea83967ca:1308c11342c349e8a2934d8bb8fd33f6\"},\"id\":\"82317317-7e72-4927-8a0f-28f4b9c41251\",\"imp\":[{\"banner\":{\"api\":[3,5],\"battr\":[3,8,9,10,14],\"btype\":[4],\"h\":480,\"pos\":1,\"w\":320},\"bidfloor\":0.01,\"displaymanager\":\"mopub\",\"displaymanagerver\":\"4.17.0 bidding\",\"ext\":{\"brsrclk\":1,\"dlp\":1,\"metric\":[{\"type\":\"viewability\",\"vendor\":\"ias\"},{\"type\":\"viewability\",\"vendor\":\"moat\"}],\"networkids\":{\"appid\":\"hbappid\",\"placementid\":\"hbplacementid\"}},\"id\":\"1\",\"instl\":0,\"secure\":0,\"tagid\":\"052068b0ef5a463590a634c0b07039ea\",\"video\":{\"api\":[3,5],\"battr\":[3,8,9,10,14],\"companiontype\":[1,2,3],\"h\":480,\"linearity\":1,\"maxduration\":120,\"mimes\":[\"video/mp4\",\"video/3gpp\"],\"minduration\":0,\"protocols\":[2,5,3,6],\"startdelay\":0,\"w\":320}}],\"regs\":{\"ext\":{\"gdpr\":0}},\"tmax\":3000,\"user\":{\"buyeruid\":\"hbsupertoken\"},\"test\":0}";
+//        requestBody = requestBody.replace("hbsupertoken", Vungle.getAvailableBidTokens(getApplicationContext()));
+        requestBody = requestBody.replace("hbsupertoken", Vungle.getAvailableBidTokensBySize(getApplicationContext(), 0));
+        requestBody = requestBody.replace("hbappid", a);
+        requestBody = requestBody.replace("hbplacementid", p);
+
+        final String request = requestBody;
+
+        Log.d("iab", "Request is: "+ request);
+
+        StringRequest postRequest =  new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String adm = "";
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONObject seatbid = jsonObject.getJSONArray("seatbid").getJSONObject(0);
+                    JSONObject bid = seatbid.getJSONArray("bid").getJSONObject(0);
+                    adm = bid.getString("adm");
+                    adMarkUp.put(p, adm);
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+
+                if (Vungle.canPlayAd(p, adm)) {
+                    Log.d(LOG_TAG, "canPlayAd invoked inside getAdMarkUp onResponse");
+                    enableButton(getVungleAd(p).playButton);
+                    disableButton(getVungleAd(p).loadButton);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("iab", "That didn't work!");
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return request == null ? null : request.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    Log.d("iab", "getBody did not work");
+                    return null;
+                }
+            }
+        };
+
+        queue.add(postRequest);
+    }
+
+    private void modifyEndPoint() {
+        String url = "https://apiqa.vungle.com/api/v5/";
+
+        try {
+            Field field = VungleApiClient.class.getDeclaredField("BASE_URL");
+            field.setAccessible(true);
+            field.set(null, url);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
     }
 
     private void enableButton(final Button button) {

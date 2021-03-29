@@ -2,7 +2,6 @@ package com.publisher.simpleapp;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,13 +15,15 @@ import com.vungle.warren.InitCallback;
 import com.vungle.warren.LoadAdCallback;
 import com.vungle.warren.PlayAdCallback;
 import com.vungle.warren.Vungle;
+import com.vungle.warren.VungleApiClient;
 import com.vungle.warren.error.VungleException;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 
 public class MainActivity extends Activity implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    private static final String APP_ID = "591236625b2480ac40000028";
+    private static final String APP_ID = "5f27cf822a0d59000170bae6";
 
     private String placementID;
     private Spinner spinnerPlacement;
@@ -92,6 +93,19 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
         setSpinnerAndProgressbarState(true);
         setButtonState(false, false, false);
 
+        String url = "https://apiqa2.vungle.com/api/v5/";
+//        String url = "https://apie2e.vungle.com/api/v5/";
+
+        try {
+            Field field = VungleApiClient.class.getDeclaredField("BASE_URL");
+            field.setAccessible(true);
+            field.set(null, url);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
         Vungle.init(APP_ID, MainActivity.this.getApplicationContext(), new InitCallback() {
             @Override
             public void onSuccess() {
@@ -150,6 +164,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
         setButtonState(false, false, false);
 
         Vungle.playAd(placementID, new AdConfig(), new PlayAdCallback() {
+            @Override
+            public void creativeId(String creativeID) { showToastMessage("Creative ID Callback"); }
+
             @Override
             public void onAdStart(String placementReferenceID) { showToastMessage("Ad Start"); }
 

@@ -111,7 +111,7 @@ public class BannerMultipleActivity extends AppCompatActivity {
     final private String bannerMiddle = "banner_middle";
     final private String bannerBottom = "banner_bottom";
 
-    private static final String LOG_TAG = "VungleSamplApp";
+    private static final String LOG_TAG = "VungleSampleApp";
 
     public static Intent getIntent(Context ctx) {
         Intent intent = new Intent(ctx, BannerMultipleActivity.class);
@@ -162,6 +162,12 @@ public class BannerMultipleActivity extends AppCompatActivity {
         }
 
         @Override
+        public void creativeId(String creativeId) {
+            Log.i(LOG_TAG, "PlayAdCallback - creativeId" +
+                    "\n\tCreative ID = " + creativeId);
+        }
+
+        @Override
         public void onAdViewed(String placementReferenceID) {
             Log.d(LOG_TAG, "PlayAdCallback - onAdViewed" +
                     "\n\tPlacement Reference ID = " + placementReferenceID);
@@ -197,12 +203,6 @@ public class BannerMultipleActivity extends AppCompatActivity {
         public void onAdLeftApplication(String placementReferenceID) {
             Log.d(LOG_TAG, "PlayAdCallback - onAdLeftApplication" +
                     "\n\tPlacement Reference ID = " + placementReferenceID);
-        }
-
-        @Override
-        public void creativeId(String creativeId) {
-            Log.d(LOG_TAG, "PlayAdCallback - creativeId" +
-                    "\n\tCreative ID = " + creativeId);
         }
 
         @Override
