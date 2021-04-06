@@ -429,11 +429,11 @@ public class MainActivity extends AppCompatActivity {
                 setFullscreenHeaderBiddingAd(ad);
                 break;
             case mrec:
-                setNativeAd(ad);
-//                setBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
+//                setNativeAd(ad);
+                setBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
                 break;
             case banner:
-                setBannerAd(ad, AdConfig.AdSize.BANNER);
+                setBannerAd(ad, AdConfig.AdSize.BANNER_SHORT);
                 break;
             default:
                 Log.d(LOG_TAG, "Vungle ad type not recognized");
@@ -496,6 +496,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (Vungle.isInitialized()) {
                     if (adMarkUp.containsKey(p)) {
+                        Vungle.loadAd(p, "fake", new AdConfig(), vungleLoadAdCallback);
                         Vungle.loadAd(p, adMarkUp.get(p), new AdConfig(), vungleLoadAdCallback);
                     } else {
                         getAdMarkUp(p);
