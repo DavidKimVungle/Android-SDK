@@ -41,6 +41,18 @@
 <!--    <string name="placement_id_banner_middle">MREC_2-0234361</string>-->
 <!--    <string name="placement_id_banner_bottom">BANNER_3-6323620</string>-->
 
+<!--    IAB QA-->
+    <string name="app_id">606c0cdd131e00594dcba7e7</string>
+    <string name="placement_id_interstitial_legacy">HB_INTERSTITIAL_1-2804469</string>
+    <string name="placement_id_interstitial_dt">HB_INTERSTITIAL_2-7616868</string>
+    <string name="placement_id_rewarded_video">HB_REWARDED_1-5124951</string>
+    <string name="placement_id_rewarded_playable">HB_REWARDED_2-3600553</string>
+    <string name="placement_id_mrec">HB_MREC_1-9620497</string>
+    <string name="placement_id_banner">HB_BANNER_1-3322226</string>
+    <string name="placement_id_banner_top">HB_BANNER_1-3322226</string>
+    <string name="placement_id_banner_middle">HB_MREC_2-4680705</string>
+    <string name="placement_id_banner_bottom">HB_BANNER_2-9546144</string>
+
     <!--    iab-->
 <!--    <string name="app_id">604fcc6f55cc82cd6391c5f4</string>-->
 <!--    <string name="placement_id_interstitial_legacy">NONHB_INT_MRAID_1-2262221</string>-->
@@ -53,15 +65,15 @@
 <!--    <string name="placement_id_banner_middle">HB_MREC_1-5988779</string>-->
 <!--    <string name="placement_id_banner_bottom">HB_BANNER_3-0358085</string>-->
 
-    <string name="app_id">59e781de7fff7cb02500ca0e</string>
-    <string name="placement_id_interstitial_legacy">NONHB_INT_MRAID_1-2262221</string>
-    <string name="placement_id_interstitial_dt">DEFAULT95027</string>
-    <string name="placement_id_rewarded_video">NONHB_REWARD_MRAID_1-3373508</string>
-    <string name="placement_id_rewarded_playable">HB_REWARD_MRAID_1-4197129</string>
-    <string name="placement_id_mrec">HB_MREC_1-5988779</string>
-    <string name="placement_id_banner">HB_BANNER_1-7004219</string>
-    <string name="placement_id_banner_top">HB_BANNER_2-4945201</string>
-    <string name="placement_id_banner_middle">HB_MREC_1-5988779</string>
-    <string name="placement_id_banner_bottom">HB_BANNER_3-0358085</string>
+<!--    <string name="app_id">59e781de7fff7cb02500ca0e</string>-->
+<!--    <string name="placement_id_interstitial_legacy">NONHB_INT_MRAID_1-2262221</string>-->
+<!--    <string name="placement_id_interstitial_dt">DEFAULT95027</string>-->
+<!--    <string name="placement_id_rewarded_video">NONHB_REWARD_MRAID_1-3373508</string>-->
+<!--    <string name="placement_id_rewarded_playable">HB_REWARD_MRAID_1-4197129</string>-->
+<!--    <string name="placement_id_mrec">HB_MREC_1-5988779</string>-->
+<!--    <string name="placement_id_banner">HB_BANNER_1-7004219</string>-->
+<!--    <string name="placement_id_banner_top">HB_BANNER_2-4945201</string>-->
+<!--    <string name="placement_id_banner_middle">HB_MREC_1-5988779</string>-->
+<!--    <string name="placement_id_banner_bottom">HB_BANNER_3-0358085</string>-->
 
 </resources>
