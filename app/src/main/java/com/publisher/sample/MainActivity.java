@@ -433,7 +433,7 @@ public class MainActivity extends AppCompatActivity {
                 setBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
                 break;
             case banner:
-                setBannerAd(ad, AdConfig.AdSize.BANNER_SHORT);
+                setBannerAd(ad, AdConfig.AdSize.BANNER_LEADERBOARD);
                 break;
             default:
                 Log.d(LOG_TAG, "Vungle ad type not recognized");
@@ -496,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (Vungle.isInitialized()) {
                     if (adMarkUp.containsKey(p)) {
-                        Vungle.loadAd(p, "fake", new AdConfig(), vungleLoadAdCallback);
+//                        Vungle.loadAd(p, "fake", new AdConfig(), vungleLoadAdCallback);
                         Vungle.loadAd(p, adMarkUp.get(p), new AdConfig(), vungleLoadAdCallback);
                     } else {
                         getAdMarkUp(p);
@@ -671,6 +671,11 @@ public class MainActivity extends AppCompatActivity {
                             vungleBannerAd = null;
                             ad.container.removeAllViews();
                         }
+
+                        Log.d(LOG_TAG, "canPlayAd for BANNER" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.BANNER));
+                        Log.d(LOG_TAG, "canPlayAd for VUNGLE_MREC" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.VUNGLE_MREC));
+                        Log.d(LOG_TAG, "canPlayAd for BANNER_LEADERBOARD" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.BANNER_LEADERBOARD));
+                        Log.d(LOG_TAG, "canPlayAd for BANNER_SHORT" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.BANNER_SHORT));
 
                         vungleBannerAd = Banners.getBanner(p, adMarkUp.get(p), adConfig, vunglePlayAdCallback);
                         adMarkUp.remove(p);
