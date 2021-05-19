@@ -64,7 +64,8 @@ dependencies {
 //    implementation 'androidx.appcompat:appcompat:1.2.0'
 
     // Vungle SDK
-    implementation 'com.github.vungle:vungle-android-sdk:6.10.1-RC2'
+//    implementation 'com.github.vungle:vungle-android-sdk:6.10.1-RC2'
+    implementation 'com.github.vungle:vungle-android-sdk:6.10.1-early1-RC1'
 
     // HBP Network
     implementation 'com.android.volley:volley:1.2.0'

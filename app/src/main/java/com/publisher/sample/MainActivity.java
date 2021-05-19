@@ -418,12 +418,12 @@ public class MainActivity extends AppCompatActivity {
                 setFullscreenHeaderBiddingAd(ad);
                 break;
             case mrec:
-//                setNativeAd(ad);
-                setAppBiddingBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
+                setNativeAd(ad);
+//                setAppBiddingBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
 //                setBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
                 break;
             case banner:
-                setAppBiddingBannerAd(ad, AdConfig.AdSize.BANNER);
+                setAppBiddingBannerAd(ad, AdConfig.AdSize.BANNER_LEADERBOARD);
 //                setBannerAd(ad, AdConfig.AdSize.BANNER);
                 break;
             default:
@@ -486,10 +486,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (Vungle.isInitialized()) {
-                    if (adMarkUp.containsKey(p)) {
-//                        Vungle.loadAd(p, "fake", new AdConfig(), vungleLoadAdCallback);
-                        Vungle.loadAd(p, adMarkUp.get(p), new AdConfig(), vungleLoadAdCallback);
+                    String adm = adMarkUp.get(p);
+
+//                    Log.d(LOG_TAG, "Vungle.loadAd with null adMarkup");
+//                    Vungle.loadAd(p, null, new AdConfig(), vungleLoadAdCallback);
+                    Log.d(LOG_TAG, "Vungle.loadAd with invalid adMarkup");
+                    Vungle.loadAd(p, "INVALID_ADMARKUP", new AdConfig(), vungleLoadAdCallback);
+
+                    if (adm != null) {
+                        Log.d(LOG_TAG, adm);
+                        Vungle.loadAd(p, adm, new AdConfig(), vungleLoadAdCallback);
+
                     } else {
+                        Log.d(LOG_TAG, "AdMarkup not found");
                         getAdMarkUp(p);
                     }
 
@@ -506,10 +515,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 setCustomRewardedFields();
                 if (Vungle.isInitialized()) {
-                    if (Vungle.canPlayAd(p, adMarkUp.get(p))) {
+                    String adm = adMarkUp.get(p);
+
+                    Log.d(LOG_TAG, "Vungle.canPlayAd with null adMarkup - " + Vungle.canPlayAd(p, null));
+                    Log.d(LOG_TAG, "Vungle.playAd with null adMarkup");
+                    Vungle.playAd(ad.placementReferenceId, null, new AdConfig(), vunglePlayAdCallback);
+
+//                    Log.d(LOG_TAG, "Vungle.canPlayAd with invalid adMarkup - " + Vungle.canPlayAd(p, "INVALID_ADMARKUP"));
+//                    Log.d(LOG_TAG, "Vungle.playAd with invalid adMarkup");
+//                    Vungle.playAd(ad.placementReferenceId, "INVALID_ADMARKUP", new AdConfig(), vunglePlayAdCallback);
+
+                    if (Vungle.canPlayAd(p, adm)) {
+                        Log.d(LOG_TAG, adm);
                         final AdConfig adConfig = getAdConfig();
-                        Vungle.playAd(ad.placementReferenceId, "admarkup", adConfig, vunglePlayAdCallback);
-//                        Vungle.playAd(ad.placementReferenceId, adMarkUp.get(p), adConfig, vunglePlayAdCallback);
+                        Vungle.playAd(ad.placementReferenceId, adm, adConfig, vunglePlayAdCallback);
                         adMarkUp.remove(p);
                         // Button UI
                         enableButton(ad.loadButton);
