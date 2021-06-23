@@ -197,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
         Vungle.getConsentMessageVersion();
         Log.d(LOG_TAG, "GDPR (pre init) - " + Vungle.getConsentStatus() + " " + Vungle.getConsentMessageVersion());
 
-        modifyEndPoint();
+//        modifyEndPoint();
 
         initUiElements();
         initSDK();
@@ -239,6 +239,8 @@ public class MainActivity extends AppCompatActivity {
                 for (String validPlacementReferenceIdId : getValidPlacements()) {
                     Log.d(LOG_TAG, validPlacementReferenceIdId);
                 }
+
+//                setCustomRewardedFields();
 
 //                Vungle.loadAd("DYNAMIC_TEMPLATE_INTERSTITIAL-6969365", null, vungleLoadAdCallback);
 //                Vungle.loadAd("DYNAMIC_TEMPLATE_REWARDED-5271535", null, vungleLoadAdCallback);
@@ -349,13 +351,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onError(final String placementReferenceID, VungleException throwable) {
+        public void onError(final String placementReferenceID, VungleException ex) {
             Log.d(LOG_TAG, "PlayAdCallback - onError" +
                     "\n\tPlacement Reference ID = " + placementReferenceID +
-                    "\n\tError = " + throwable.getLocalizedMessage());
+                    "\n\tError = " + ex.getLocalizedMessage());
 
-            makeToast(throwable.getLocalizedMessage());
-            checkInitStatus(throwable);
+            makeToast(ex.getLocalizedMessage());
+            checkInitStatus(ex);
         }
     };
 
@@ -411,20 +413,22 @@ public class MainActivity extends AppCompatActivity {
             case interstitial:
                 setFullscreenAd(ad);
             case interstitialHeaderBidding:
-                setFullscreenHeaderBiddingAd(ad);
+                setFullscreenAd(ad);
+//                setFullscreenHeaderBiddingAd(ad);
             case rewarded:
                 setFullscreenAd(ad);
             case rewardedHeaderBidding:
-                setFullscreenHeaderBiddingAd(ad);
+                setFullscreenAd(ad);
+//                setFullscreenHeaderBiddingAd(ad);
                 break;
             case mrec:
                 setNativeAd(ad);
-//                setAppBiddingBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
+//                setAppBiddingBannerAd(ad, AdConfig.AdSize.VUN GLE_MREC);
 //                setBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
                 break;
             case banner:
-                setAppBiddingBannerAd(ad, AdConfig.AdSize.BANNER_LEADERBOARD);
-//                setBannerAd(ad, AdConfig.AdSize.BANNER);
+//                setAppBiddingBannerAd(ad, AdConfig.AdSize.BANNER_LEADERBOARD);
+                setBannerAd(ad, AdConfig.AdSize.BANNER);
                 break;
             default:
                 Log.d(LOG_TAG, "Vungle ad type not recognized");
@@ -434,9 +438,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFullscreenAd(final VungleAd ad) {
         // Set custom configuration for rewarded placements
-        if (ad.name.equals(rewarded) || ad.name.equals(rewardedHeaderBidding)) {
-            setCustomRewardedFields();
-        }
+//        if (ad.name.equals(rewarded) || ad.name.equals(rewardedHeaderBidding)) {
+//            setCustomRewardedFields();
+//        }
+
+//        setCustomRewardedFields();
 
         ad.loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -490,8 +496,8 @@ public class MainActivity extends AppCompatActivity {
 
 //                    Log.d(LOG_TAG, "Vungle.loadAd with null adMarkup");
 //                    Vungle.loadAd(p, null, new AdConfig(), vungleLoadAdCallback);
-                    Log.d(LOG_TAG, "Vungle.loadAd with invalid adMarkup");
-                    Vungle.loadAd(p, "INVALID_ADMARKUP", new AdConfig(), vungleLoadAdCallback);
+//                    Log.d(LOG_TAG, "Vungle.loadAd with invalid adMarkup");
+//                    Vungle.loadAd(p, "INVALID_ADMARKUP", new AdConfig(), vungleLoadAdCallback);
 
                     if (adm != null) {
                         Log.d(LOG_TAG, adm);
@@ -517,9 +523,9 @@ public class MainActivity extends AppCompatActivity {
                 if (Vungle.isInitialized()) {
                     String adm = adMarkUp.get(p);
 
-                    Log.d(LOG_TAG, "Vungle.canPlayAd with null adMarkup - " + Vungle.canPlayAd(p, null));
-                    Log.d(LOG_TAG, "Vungle.playAd with null adMarkup");
-                    Vungle.playAd(ad.placementReferenceId, null, new AdConfig(), vunglePlayAdCallback);
+//                    Log.d(LOG_TAG, "Vungle.canPlayAd with null adMarkup - " + Vungle.canPlayAd(p, null));
+//                    Log.d(LOG_TAG, "Vungle.playAd with null adMarkup");
+//                    Vungle.playAd(ad.placementReferenceId, null, new AdConfig(), vunglePlayAdCallback);
 
 //                    Log.d(LOG_TAG, "Vungle.canPlayAd with invalid adMarkup - " + Vungle.canPlayAd(p, "INVALID_ADMARKUP"));
 //                    Log.d(LOG_TAG, "Vungle.playAd with invalid adMarkup");
@@ -600,6 +606,15 @@ public class MainActivity extends AppCompatActivity {
 
                         ad.nativeAdPlaying = true;
                         ad.pauseResumeButton.setText("PAUSE");
+//
+//                        try {
+//                            sleep(5000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                        Log.d(LOG_TAG, "play ad for fullscreen issued before MREC");
+//                        Vungle.playAd("DYNAMIC_TEMPLATE_INTERSTITIAL-6969365", null, vunglePlayAdCallback);
                     } else {
                         makeToast("Vungle ad not playable for " + ad.placementReferenceId);
                     }
@@ -800,7 +815,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (Vungle.isInitialized()) {
-                    if (Banners.canPlayAd(p, AdConfig.AdSize.BANNER_SHORT)) {
+                    if (Banners.canPlayAd(p, adConfig.getAdSize())) {
                         if (vungleBannerAd != null) {
                             vungleBannerAd.destroyAd();
                             vungleBannerAd = null;
@@ -812,7 +827,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(LOG_TAG, "NBP canPlayAd for BANNER_LEADERBOARD" + Banners.canPlayAd(p, AdConfig.AdSize.BANNER_LEADERBOARD));
                         Log.d(LOG_TAG, "NBP canPlayAd for BANNER_SHORT" + Banners.canPlayAd(p, AdConfig.AdSize.BANNER_SHORT));
 
-                        adConfig.setAdSize(AdConfig.AdSize.VUNGLE_MREC);
+//                        adConfig.setAdSize(AdConfig.AdSize.VUNGLE_MREC);
                         vungleBannerAd = Banners.getBanner(p, adConfig, vunglePlayAdCallback);
 //                        vungleBannerAd = Banners.getBanner(p, adConfig, vunglePlayAdCallback);
 
@@ -896,8 +911,8 @@ public class MainActivity extends AppCompatActivity {
     private AdConfig getAdConfig() {
         AdConfig adConfig = new AdConfig();
 
-        adConfig.setBackButtonImmediatelyEnabled(true);
-        adConfig.setAdOrientation(AdConfig.PORTRAIT);
+//        adConfig.setBackButtonImmediatelyEnabled(true);
+        adConfig.setAdOrientation(AdConfig.MATCH_VIDEO);
 
         adConfig.setMuted(true);
 
@@ -936,7 +951,8 @@ public class MainActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        String url = "https://rtb-ext-qa.api.vungle.com/bid/t/34dec8a";
+        String url = "https://rtb.api.vungle.com/bid/t/34dec8a";
+//        String url = "https://rtb-ext-qa.api.vungle.com/bid/t/34dec8a";
         String requestBody = "{\"app\":{\"cat\":[\"IAB3\",\"business\"],\"id\":\"ac58e7b8f4614177a53f75681fbc104a\",\"name\":\"iOS Advanced Bidding Test App\",\"publisher\":{\"id\":\"1308c11342c349e8a2934d8bb8fd33f6\",\"name\":\"Twitter\"},\"ver\":\"1.0\"},\"at\":1,\"bcat\":[\"IAB25\",\"IAB26\",\"IAB7-39\",\"IAB8-18\",\"IAB8-5\",\"IAB9-9\"],\"device\":{\"connectiontype\":2,\"dnt\":0,\"h\":1136,\"ifa\":\"4423DD36-2738-46DC-84D1-02A47F95320D1\",\"js\":1,\"language\":\"en\",\"os\":\"ios\",\"osv\":\"13\",\"pxratio\":2,\"ua\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148\",\"w\":640},\"ext\":{\"pchain\":\"74b46c0ea83967ca:1308c11342c349e8a2934d8bb8fd33f6\"},\"id\":\"82317317-7e72-4927-8a0f-28f4b9c41251\",\"imp\":[{\"banner\":{\"api\":[3,5],\"battr\":[3,8,9,10,14],\"btype\":[4],\"h\":480,\"pos\":1,\"w\":320},\"bidfloor\":0.01,\"displaymanager\":\"mopub\",\"displaymanagerver\":\"4.17.0 bidding\",\"ext\":{\"brsrclk\":1,\"dlp\":1,\"metric\":[{\"type\":\"viewability\",\"vendor\":\"ias\"},{\"type\":\"viewability\",\"vendor\":\"moat\"}],\"networkids\":{\"appid\":\"hbappid\",\"placementid\":\"hbplacementid\"}},\"id\":\"1\",\"instl\":0,\"secure\":0,\"tagid\":\"052068b0ef5a463590a634c0b07039ea\",\"video\":{\"api\":[3,5],\"battr\":[3,8,9,10,14],\"companiontype\":[1,2,3],\"h\":480,\"linearity\":1,\"maxduration\":120,\"mimes\":[\"video/mp4\",\"video/3gpp\"],\"minduration\":0,\"protocols\":[2,5,3,6],\"startdelay\":0,\"w\":320}}],\"regs\":{\"ext\":{\"gdpr\":0}},\"tmax\":3000,\"user\":{\"buyeruid\":\"hbsupertoken\"},\"test\":1}";
         requestBody = requestBody.replace("hbsupertoken", Vungle.getAvailableBidTokens(getApplicationContext()));
 //        requestBody = requestBody.replace("hbsupertoken", Vungle.getAvailableBidTokensBySize(getApplicationContext(), 0));

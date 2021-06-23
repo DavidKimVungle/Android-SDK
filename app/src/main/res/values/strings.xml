@@ -17,17 +17,17 @@
     <string name="title_banner_bottom">Bottom Banner</string>
     <string name="title_fullscreen">Fullscreen</string>
 
-<!--    <string name="app_id">5ae0db55e2d43668c97bd65e</string>-->
-<!--    <string name="placement_id_interstitial_legacy">LEGACY_INTERSTITIAL-4364832</string>-->
-<!--    <string name="placement_id_interstitial_dt">DYNAMIC_TEMPLATE_INTERSTITIAL-6969365</string>-->
-<!--    <string name="placement_id_rewarded_video">LEGACY_REWARDED-2115035</string>-->
-<!--    <string name="placement_id_rewarded_playable">DYNAMIC_TEMPLATE_REWARDED-5271535</string>-->
-<!--    <string name="placement_id_mrec">MREC-2191415</string>-->
-<!--    <string name="placement_id_banner">BANNER-5454585</string>-->
-<!--&lt;!&ndash;    <string name="placement_id_banner">BANNER_NO_FILL-9322170</string>&ndash;&gt;-->
-<!--    <string name="placement_id_banner_top">BANNER2-6990728</string>-->
-<!--    <string name="placement_id_banner_middle">MREC-2191415</string>-->
-<!--    <string name="placement_id_banner_bottom">BANNER3-3633049</string>-->
+    <string name="app_id">5ae0db55e2d43668c97bd65e</string>
+    <string name="placement_id_interstitial_legacy">LEGACY_INTERSTITIAL-4364832</string>
+    <string name="placement_id_interstitial_dt">DYNAMIC_TEMPLATE_INTERSTITIAL-6969365</string>
+    <string name="placement_id_rewarded_video">LEGACY_REWARDED-2115035</string>
+    <string name="placement_id_rewarded_playable">DYNAMIC_TEMPLATE_REWARDED-5271535</string>
+    <string name="placement_id_mrec">MREC-2191415</string>
+    <string name="placement_id_banner">BANNER-5454585</string>
+<!--    <string name="placement_id_banner">BANNER_NO_FILL-9322170</string>-->
+    <string name="placement_id_banner_top">BANNER2-6990728</string>
+    <string name="placement_id_banner_middle">MREC-2191415</string>
+    <string name="placement_id_banner_bottom">BANNER3-3633049</string>
 
 <!--    adapter e2e-->
 <!--    <string name="app_id">602468659f83859b22003644</string>-->
@@ -41,29 +41,41 @@
 <!--    <string name="placement_id_banner_middle">MREC_2-0234361</string>-->
 <!--    <string name="placement_id_banner_bottom">BANNER_3-6323620</string>-->
 
-<!--    IAB QA-->
-    <string name="app_id">606c0cdd131e00594dcba7e7</string>
-    <string name="placement_id_interstitial_legacy">HB_INTERSTITIAL_1-2804469</string>
-    <string name="placement_id_interstitial_dt">HB_INTERSTITIAL_2-7616868</string>
-    <string name="placement_id_rewarded_video">HB_REWARDED_1-5124951</string>
-    <string name="placement_id_rewarded_playable">HB_REWARDED_2-3600553</string>
-    <string name="placement_id_mrec">HB_MREC_1-9620497</string>
-    <string name="placement_id_banner">HB_BANNER_1-3322226</string>
-    <string name="placement_id_banner_top">HB_BANNER_1-3322226</string>
-    <string name="placement_id_banner_middle">HB_MREC_2-4680705</string>
-    <string name="placement_id_banner_bottom">HB_BANNER_2-9546144</string>
+    <!--    IAB-->
+<!--    <string name="app_id">606c0cdd131e00594dcba7e7</string>-->
+<!--    <string name="placement_id_interstitial_legacy">HB_INTERSTITIAL_1-2804469</string>-->
+<!--    <string name="placement_id_interstitial_dt">HB_INTERSTITIAL_2-7616868</string>-->
+<!--    <string name="placement_id_rewarded_video">HB_REWARDED_1-5124951</string>-->
+<!--    <string name="placement_id_rewarded_playable">HB_REWARDED_2-3600553</string>-->
+<!--    <string name="placement_id_mrec">HB_MREC_1-9620497</string>-->
+<!--    <string name="placement_id_banner">HB_BANNER_1-3322226</string>-->
+<!--    <string name="placement_id_banner_top">HB_BANNER_1-3322226</string>-->
+<!--    <string name="placement_id_banner_middle">HB_MREC_2-4680705</string>-->
+<!--    <string name="placement_id_banner_bottom">HB_BANNER_2-9546144</string>-->
+
+    <!--    IAB QA-->
+<!--    <string name="app_id">60c7dd2390fd90742da9ef72</string>-->
+<!--    <string name="placement_id_interstitial_1">IAB_INTERSTITIAL_1-0526069</string>-->
+<!--    <string name="placement_id_interstitial_2">IAB_INTERSTITIAL_2-1720216</string>-->
+<!--    <string name="placement_id_rewarded_video">HB_REWARDED_1-5124951</string>-->
+<!--    <string name="placement_id_rewarded_playable">HB_REWARDED_2-3600553</string>-->
+<!--    <string name="placement_id_mrec">HB_MREC_1-9620497</string>-->
+<!--    <string name="placement_id_banner">HB_BANNER_1-3322226</string>-->
+<!--    <string name="placement_id_banner_top">HB_BANNER_1-3322226</string>-->
+<!--    <string name="placement_id_banner_middle">HB_MREC_2-4680705</string>-->
+<!--    <string name="placement_id_banner_bottom">HB_BANNER_2-9546144</string>-->
 
     <!--    iab-->
-<!--    <string name="app_id">604fcc6f55cc82cd6391c5f4</string>-->
-<!--    <string name="placement_id_interstitial_legacy">NONHB_INT_MRAID_1-2262221</string>-->
-<!--    <string name="placement_id_interstitial_dt">HB_INT_MRAID_1-7517112</string>-->
-<!--    <string name="placement_id_rewarded_video">NONHB_REWARD_MRAID_1-3373508</string>-->
-<!--    <string name="placement_id_rewarded_playable">HB_REWARD_MRAID_1-4197129</string>-->
-<!--    <string name="placement_id_mrec">HB_MREC_1-5988779</string>-->
-<!--    <string name="placement_id_banner">HB_BANNER_1-7004219</string>-->
-<!--    <string name="placement_id_banner_top">HB_BANNER_2-4945201</string>-->
-<!--    <string name="placement_id_banner_middle">HB_MREC_1-5988779</string>-->
-<!--    <string name="placement_id_banner_bottom">HB_BANNER_3-0358085</string>-->
+<!--    <string name="app_id">606c04d41f7e3ab827d34ea7</string>-->
+<!--    <string name="placement_id_interstitial_legacy">HB_INTERSTITIAL_1-7266175</string>-->
+<!--    <string name="placement_id_interstitial_dt">HB_INTERSTITIAL_2-1083806</string>-->
+<!--    <string name="placement_id_rewarded_video">HB_REWARDED_1-8239818</string>-->
+<!--    <string name="placement_id_rewarded_playable">HB_REWARDED_2-0975280</string>-->
+<!--    <string name="placement_id_mrec">HB_MREC_1-7234286</string>-->
+<!--    <string name="placement_id_banner">HB_BANNER_1-6851375</string>-->
+<!--    <string name="placement_id_banner_top">HB_BANNER_1-6851375</string>-->
+<!--    <string name="placement_id_banner_middle">HB_MREC_2-0352344</string>-->
+<!--    <string name="placement_id_banner_bottom">HB_BANNER_2-7631507</string>-->
 
 <!--    <string name="app_id">59e781de7fff7cb02500ca0e</string>-->
 <!--    <string name="placement_id_interstitial_legacy">NONHB_INT_MRAID_1-2262221</string>-->
