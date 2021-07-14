@@ -412,18 +412,21 @@ public class MainActivity extends AppCompatActivity {
         switch (ad.name) {
             case interstitial:
                 setFullscreenAd(ad);
+                break;
             case interstitialHeaderBidding:
-                setFullscreenAd(ad);
-//                setFullscreenHeaderBiddingAd(ad);
+//                setFullscreenAd(ad);
+                setFullscreenHeaderBiddingAd(ad);
+                break;
             case rewarded:
                 setFullscreenAd(ad);
+                break;
             case rewardedHeaderBidding:
                 setFullscreenAd(ad);
 //                setFullscreenHeaderBiddingAd(ad);
                 break;
             case mrec:
                 setNativeAd(ad);
-//                setAppBiddingBannerAd(ad, AdConfig.AdSize.VUN GLE_MREC);
+//                setAppBiddingBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
 //                setBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
                 break;
             case banner:
@@ -488,31 +491,38 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final String p = ad.placementReferenceId;
+//        ad.loadButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (Vungle.isInitialized()) {
+//                    String adm = adMarkUp.get(p);
+//
+////                    Log.d(LOG_TAG, "Vungle.loadAd with null adMarkup");
+////                    Vungle.loadAd(p, null, new AdConfig(), vungleLoadAdCallback);
+////                    Log.d(LOG_TAG, "Vungle.loadAd with invalid adMarkup");
+////                    Vungle.loadAd(p, "INVALID_ADMARKUP", new AdConfig(), vungleLoadAdCallback);
+//
+//                    if (adm != null) {
+//                        Log.d(LOG_TAG, adm);
+//                        Vungle.loadAd(p, adm, new AdConfig(), vungleLoadAdCallback);
+//
+//                    } else {
+//                        Log.d(LOG_TAG, "AdMarkup not found");
+//                        getAdMarkUp(p);
+//                    }
+//
+//                    // Button UI
+//                    disableButton(ad.loadButton);
+//                } else {
+//                    makeToast("Vungle SDK not initialized");
+//                }
+//            }
+//        });
+
         ad.loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Vungle.isInitialized()) {
-                    String adm = adMarkUp.get(p);
-
-//                    Log.d(LOG_TAG, "Vungle.loadAd with null adMarkup");
-//                    Vungle.loadAd(p, null, new AdConfig(), vungleLoadAdCallback);
-//                    Log.d(LOG_TAG, "Vungle.loadAd with invalid adMarkup");
-//                    Vungle.loadAd(p, "INVALID_ADMARKUP", new AdConfig(), vungleLoadAdCallback);
-
-                    if (adm != null) {
-                        Log.d(LOG_TAG, adm);
-                        Vungle.loadAd(p, adm, new AdConfig(), vungleLoadAdCallback);
-
-                    } else {
-                        Log.d(LOG_TAG, "AdMarkup not found");
-                        getAdMarkUp(p);
-                    }
-
-                    // Button UI
-                    disableButton(ad.loadButton);
-                } else {
-                    makeToast("Vungle SDK not initialized");
-                }
+               Log.d(LOG_TAG, "canPlayAd for LEGACY_INTERSTITIAL-4364832 is " + Vungle.canPlayAd("LEGACY_INTERSTITIAL-4364832"));
             }
         });
 
