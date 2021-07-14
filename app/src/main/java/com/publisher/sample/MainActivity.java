@@ -1019,7 +1019,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void modifyEndPoint() {
-        String url = "https://apiqa.vungle.com/api/v5/";
+//        String url = "https://apiqa.vungle.com/api/v5/";
+        String url = "https://apie2e.vungle.com/api/v5/";
 
         try {
             Field field = VungleApiClient.class.getDeclaredField("BASE_URL");
