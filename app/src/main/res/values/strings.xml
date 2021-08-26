@@ -88,4 +88,15 @@
 <!--    <string name="placement_id_banner_middle">HB_MREC_1-5988779</string>-->
 <!--    <string name="placement_id_banner_bottom">HB_BANNER_3-0358085</string>-->
 
+<!--    Amazon-->
+<!--    <string name="app_id">59d6a4bc0d22864317004ac9</string>-->
+<!--    <string name="placement_id_interstitial_legacy">LEGACNO24982</string>-->
+<!--    <string name="placement_id_interstitial_dt">DTEMPNO43623</string>-->
+<!--    <string name="placement_id_rewarded_video">LEGACRW08977</string>-->
+<!--    <string name="placement_id_rewarded_playable">DTEMPRW96735</string>-->
+<!--    <string name="placement_id_mrec">HB_MREC_1-7234286</string>-->
+<!--    <string name="placement_id_banner">HB_BANNER_1-6851375</string>-->
+<!--    <string name="placement_id_banner_top">HB_BANNER_1-6851375</string>-->
+<!--    <string name="placement_id_banner_middle">HB_MREC_2-0352344</string>-->
+<!--    <string name="placement_id_banner_bottom">HB_BANNER_2-7631507</string>-->
 </resources>

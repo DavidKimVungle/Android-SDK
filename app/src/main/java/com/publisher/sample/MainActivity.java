@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -230,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess() {
                 makeToast("Vungle SDK initialized");
 
-//                getAdMarkUp(getString(R.string.app_id), getString(R.string.placement_id_interstitial_dt));
+//                getAdMarkUpAndLoadAd(getString(R.string.app_id), getString(R.string.placement_id_interstitial_dt));
 
                 Log.d(LOG_TAG, "InitCallback - onSuccess");
                 Log.d(LOG_TAG, "Vungle SDK Version - " + com.vungle.warren.BuildConfig.VERSION_NAME);
@@ -249,7 +248,8 @@ public class MainActivity extends AppCompatActivity {
                 // Set button state according to ad playability
                 for (VungleAd vungleAd : vungleAds) {
                     String id = vungleAd.placementReferenceId;
-//                    getAdMarkUp(id);
+//                    getAdMarkUpAndLoadAd(id);
+//                    if (Vungle.canPlayAd(id) || Vungle.canPlayAd(id, adMarkUp.get(id))) {
                     if (Vungle.canPlayAd(id) || Vungle.canPlayAd(id, adMarkUp.get(id))) {
                         enableButton(vungleAd.playButton);
                     } else {
@@ -411,26 +411,28 @@ public class MainActivity extends AppCompatActivity {
 
         switch (ad.name) {
             case interstitial:
-                setFullscreenAd(ad);
+//                setFullscreenAd(ad);
+                setFullscreenHeaderBiddingAd(ad);
                 break;
             case interstitialHeaderBidding:
 //                setFullscreenAd(ad);
                 setFullscreenHeaderBiddingAd(ad);
                 break;
             case rewarded:
-                setFullscreenAd(ad);
+//                setFullscreenAd(ad);
+                setFullscreenHeaderBiddingAd(ad);
                 break;
             case rewardedHeaderBidding:
-                setFullscreenAd(ad);
-//                setFullscreenHeaderBiddingAd(ad);
+//                setFullscreenAd(ad);
+                setFullscreenHeaderBiddingAd(ad);
                 break;
             case mrec:
-                setNativeAd(ad);
-//                setAppBiddingBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
+//                setNativeAd(ad);
+                setAppBiddingBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
 //                setBannerAd(ad, AdConfig.AdSize.VUNGLE_MREC);
                 break;
             case banner:
-                setAppBiddingBannerAd(ad, AdConfig.AdSize.BANNER_LEADERBOARD);
+                setAppBiddingBannerAd(ad, AdConfig.AdSize.BANNER);
 //                setBannerAd(ad, AdConfig.AdSize.BANNER);
                 break;
             default:
@@ -476,6 +478,7 @@ public class MainActivity extends AppCompatActivity {
                         disableButton(ad.playButton);
                     } else {
                         makeToast("Vungle ad not playable for " + ad.placementReferenceId);
+
                     }
                 } else {
                     makeToast("Vungle SDK not initialized");
@@ -508,7 +511,7 @@ public class MainActivity extends AppCompatActivity {
 
                     } else {
                         Log.d(LOG_TAG, "AdMarkup not found");
-                        getAdMarkUp(p);
+                        getAdMarkUpAndLoadAd(p);
                     }
 
                     // Button UI
@@ -533,24 +536,28 @@ public class MainActivity extends AppCompatActivity {
                 if (Vungle.isInitialized()) {
                     String adm = adMarkUp.get(p);
 
-                    Log.d(LOG_TAG, "Vungle.canPlayAd with null adMarkup - " + Vungle.canPlayAd(p, null));
-                    Log.d(LOG_TAG, "Vungle.playAd with null adMarkup");
-                    Vungle.playAd(ad.placementReferenceId, null, new AdConfig(), vunglePlayAdCallback);
-
-                    Log.d(LOG_TAG, "Vungle.canPlayAd with invalid adMarkup - " + Vungle.canPlayAd(p, "INVALID_ADMARKUP"));
-                    Log.d(LOG_TAG, "Vungle.playAd with invalid adMarkup");
-                    Vungle.playAd(ad.placementReferenceId, "INVALID_ADMARKUP", new AdConfig(), vunglePlayAdCallback);
-
-                    if (Vungle.canPlayAd(p, adm)) {
-                        Log.d(LOG_TAG, adm);
-                        final AdConfig adConfig = getAdConfig();
-                        Vungle.playAd(ad.placementReferenceId, adm, adConfig, vunglePlayAdCallback);
-                        adMarkUp.remove(p);
-                        // Button UI
-                        enableButton(ad.loadButton);
-                        disableButton(ad.playButton);
+                    if (adm == null) {
+                        getAdMarkUp(p);
                     } else {
-                        makeToast("Vungle ad not playable for " + ad.placementReferenceId);
+                        Log.d(LOG_TAG, "Vungle.canPlayAd with null adMarkup - " + Vungle.canPlayAd(p, null));
+                        Log.d(LOG_TAG, "Vungle.playAd with null adMarkup");
+//                        Vungle.playAd(ad.placementReferenceId, null, new AdConfig(), vunglePlayAdCallback);
+
+                        Log.d(LOG_TAG, "Vungle.canPlayAd with invalid adMarkup - " + Vungle.canPlayAd(p, "INVALID_ADMARKUP"));
+                        Log.d(LOG_TAG, "Vungle.playAd with invalid adMarkup");
+//                        Vungle.playAd(ad.placementReferenceId, "INVALID_ADMARKUP", new AdConfig(), vunglePlayAdCallback);
+
+                        if (Vungle.canPlayAd(p, adm)) {
+                            Log.d(LOG_TAG, adm);
+                            final AdConfig adConfig = getAdConfig();
+                            Vungle.playAd(ad.placementReferenceId, adm, adConfig, vunglePlayAdCallback);
+                            adMarkUp.remove(p);
+                            // Button UI
+                            enableButton(ad.loadButton);
+                            disableButton(ad.playButton);
+                        } else {
+                            makeToast("Vungle ad not playable for " + ad.placementReferenceId);
+                        }
                     }
                 } else {
                     makeToast("Vungle SDK not initialized");
@@ -578,7 +585,7 @@ public class MainActivity extends AppCompatActivity {
                     if (adMarkUp.containsKey(p)) {
                         Vungle.loadAd(p, adMarkUp.get(p), adConfig, vungleLoadAdCallback);
                     } else {
-                        getAdMarkUp(p);
+                        getAdMarkUpAndLoadAd(p);
                     }
                 } else {
                     makeToast("Vungle SDK not initialized");
@@ -686,7 +693,7 @@ public class MainActivity extends AppCompatActivity {
                         Banners.loadBanner(p, adMarkUp.get(p), adConfig, vungleLoadAdCallback);
 //                        Banners.loadBanner(p, "INVALID_AD_MARKUP", adConfig, vungleLoadAdCallback);
                     } else {
-                        getAdMarkUp(p);
+                        getAdMarkUpAndLoadAd(p);
                     }
 
                     // Button UI
@@ -701,44 +708,49 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (Vungle.isInitialized()) {
-                    adConfig.setAdSize(AdConfig.AdSize.VUNGLE_MREC);
-                    if (Banners.canPlayAd(p, adMarkUp.get(p), adConfig.getAdSize())) {
-                        if (vungleBannerAd != null) {
-                            vungleBannerAd.destroyAd();
-                            vungleBannerAd = null;
-                            ad.container.removeAllViews();
-                        }
+                    String adm = adMarkUp.get(p);
 
-                        Log.d(LOG_TAG, "canPlayAd for BANNER" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.BANNER));
-                        Log.d(LOG_TAG, "canPlayAd for VUNGLE_MREC" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.VUNGLE_MREC));
-                        Log.d(LOG_TAG, "canPlayAd for BANNER_LEADERBOARD" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.BANNER_LEADERBOARD));
-                        Log.d(LOG_TAG, "canPlayAd for BANNER_SHORT" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.BANNER_SHORT));
-
-                        String placement = "1";
-                        String admarkup = "1";
-
-                        final BannerAdConfig bac = new BannerAdConfig();
-                        bac.setAdSize(AdConfig.AdSize.VUNGLE_MREC);
-                        vungleBannerAd = Banners.getBanner(p, adMarkUp.get(p), bac, vunglePlayAdCallback);
-                        adMarkUp.remove(p);
-
-                        if (vungleBannerAd != null) {
-                            ad.container.addView(vungleBannerAd);
-                            ad.container.setVisibility(RelativeLayout.VISIBLE);
-                        }
-
-                        ad.nativeAdPlaying = true;
-
-                        // Button UI
-                        enableButton(ad.loadButton);
-                        disableButton(ad.playButton);
-                        enableButton(ad.pauseResumeButton);
-                        enableButton(ad.closeButton);
-
-                        ad.nativeAdPlaying = true;
-                        ad.pauseResumeButton.setText("PAUSE");
+                    if (adm == null) {
+                        getAdMarkUp(p);
                     } else {
-                        makeToast("Vungle ad not playable for " + ad.placementReferenceId);
+                        if (Banners.canPlayAd(p, adMarkUp.get(p), adConfig.getAdSize())) {
+                            if (vungleBannerAd != null) {
+                                vungleBannerAd.destroyAd();
+                                vungleBannerAd = null;
+                                ad.container.removeAllViews();
+                            }
+
+                            Log.d(LOG_TAG, "canPlayAd for BANNER" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.BANNER));
+                            Log.d(LOG_TAG, "canPlayAd for VUNGLE_MREC" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.VUNGLE_MREC));
+                            Log.d(LOG_TAG, "canPlayAd for BANNER_LEADERBOARD" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.BANNER_LEADERBOARD));
+                            Log.d(LOG_TAG, "canPlayAd for BANNER_SHORT" + Banners.canPlayAd(p, adMarkUp.get(p), AdConfig.AdSize.BANNER_SHORT));
+
+                            String placement = "1";
+                            String admarkup = "1";
+
+                            final BannerAdConfig bac = new BannerAdConfig();
+                            bac.setAdSize(AdConfig.AdSize.VUNGLE_MREC);
+                            vungleBannerAd = Banners.getBanner(p, adMarkUp.get(p), bac, vunglePlayAdCallback);
+                            adMarkUp.remove(p);
+
+                            if (vungleBannerAd != null) {
+                                ad.container.addView(vungleBannerAd);
+                                ad.container.setVisibility(RelativeLayout.VISIBLE);
+                            }
+
+                            ad.nativeAdPlaying = true;
+
+                            // Button UI
+                            enableButton(ad.loadButton);
+                            disableButton(ad.playButton);
+                            enableButton(ad.pauseResumeButton);
+                            enableButton(ad.closeButton);
+
+                            ad.nativeAdPlaying = true;
+                            ad.pauseResumeButton.setText("PAUSE");
+                        } else {
+                            makeToast("Vungle ad not playable for " + ad.placementReferenceId);
+                        }
                     }
                 } else {
                     makeToast("Vungle SDK not initialized");
@@ -791,7 +803,9 @@ public class MainActivity extends AppCompatActivity {
             ad.bannerMultipleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(BannerMultipleActivity.getIntent(MainActivity.this));
+//                    startActivity(BannerMultipleActivity.getIntent(MainActivity.this));
+                    String id = getString(R.string.placement_id_interstitial_legacy);
+                    Vungle.loadAd(id, adMarkUp.get(id), null, vungleLoadAdCallback);
                 }
             });
         }
@@ -956,7 +970,66 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private void getAdMarkUp(String placementId) {
+    private void getAdMarkUp(String id) {
+        final String a = getString(R.string.app_id);
+        final String p = id;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String url = "https://rtb.api.vungle.com/bid/t/34dec8a";
+//        String url = "https://rtb-ext-qa.api.vungle.com/bid/t/34dec8a";
+        String requestBody = "{\"app\":{\"cat\":[\"IAB3\",\"business\"],\"id\":\"ac58e7b8f4614177a53f75681fbc104a\",\"name\":\"iOS Advanced Bidding Test App\",\"publisher\":{\"id\":\"1308c11342c349e8a2934d8bb8fd33f6\",\"name\":\"Twitter\"},\"ver\":\"1.0\"},\"at\":1,\"bcat\":[\"IAB25\",\"IAB26\",\"IAB7-39\",\"IAB8-18\",\"IAB8-5\",\"IAB9-9\"],\"device\":{\"connectiontype\":2,\"dnt\":0,\"h\":1136,\"ifa\":\"4423DD36-2738-46DC-84D1-02A47F95320D1\",\"js\":1,\"language\":\"en\",\"os\":\"ios\",\"osv\":\"13\",\"pxratio\":2,\"ua\":\"Mozilla/5.0 (iPhone; CPU iPhone OS 12_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148\",\"w\":640},\"ext\":{\"pchain\":\"74b46c0ea83967ca:1308c11342c349e8a2934d8bb8fd33f6\"},\"id\":\"82317317-7e72-4927-8a0f-28f4b9c41251\",\"imp\":[{\"banner\":{\"api\":[3,5],\"battr\":[3,8,9,10,14],\"btype\":[4],\"h\":480,\"pos\":1,\"w\":320},\"bidfloor\":0.01,\"displaymanager\":\"mopub\",\"displaymanagerver\":\"4.17.0 bidding\",\"ext\":{\"brsrclk\":1,\"dlp\":1,\"metric\":[{\"type\":\"viewability\",\"vendor\":\"ias\"},{\"type\":\"viewability\",\"vendor\":\"moat\"}],\"networkids\":{\"appid\":\"hbappid\",\"placementid\":\"hbplacementid\"}},\"id\":\"1\",\"instl\":0,\"secure\":0,\"tagid\":\"052068b0ef5a463590a634c0b07039ea\",\"video\":{\"api\":[3,5],\"battr\":[3,8,9,10,14],\"companiontype\":[1,2,3],\"h\":480,\"linearity\":1,\"maxduration\":120,\"mimes\":[\"video/mp4\",\"video/3gpp\"],\"minduration\":0,\"protocols\":[2,5,3,6],\"startdelay\":0,\"w\":320}}],\"regs\":{\"ext\":{\"gdpr\":0}},\"tmax\":3000,\"user\":{\"buyeruid\":\"hbsupertoken\"},\"test\":1}";
+        requestBody = requestBody.replace("hbsupertoken", Vungle.getAvailableBidTokens(getApplicationContext()));
+//        requestBody = requestBody.replace("hbsupertoken", Vungle.getAvailableBidTokensBySize(getApplicationContext(), 0));
+        requestBody = requestBody.replace("hbappid", a);
+        requestBody = requestBody.replace("hbplacementid", p);
+
+        final String request = requestBody;
+
+        Log.d("iab", "Request is: "+ request);
+
+        StringRequest postRequest =  new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                String adm = "";
+
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    JSONObject seatbid = jsonObject.getJSONArray("seatbid").getJSONObject(0);
+                    JSONObject bid = seatbid.getJSONArray("bid").getJSONObject(0);
+                    adm = bid.getString("adm");
+                    adMarkUp.put(p, adm);
+                } catch (JSONException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(LOG_TAG, "That didn't work!");
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                try {
+                    return request == null ? null : request.getBytes("utf-8");
+                } catch (UnsupportedEncodingException uee) {
+                    Log.d(LOG_TAG, "getBody did not work");
+                    return null;
+                }
+            }
+        };
+
+        queue.add(postRequest);
+    }
+
+    private void getAdMarkUpAndLoadAd(String placementId) {
         final String a = getString(R.string.app_id);
         final String p = placementId;
 
