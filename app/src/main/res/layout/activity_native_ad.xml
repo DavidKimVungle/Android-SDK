@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="8dp">
+
+    <LinearLayout
+        android:id="@+id/native_ad_button_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_row_height"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:layout_marginBottom="@dimen/margin_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/padding_horizontal"
+        android:paddingRight="@dimen/padding_horizontal"
+        android:scaleType="fitCenter">
+
+        <Button
+            android:id="@+id/load_native_ad_button"
+            android:layout_width="@dimen/btn_width"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginLeft="@dimen/btn_margin_horizontal"
+            android:layout_marginRight="@dimen/btn_margin_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/aqua_button_bg"
+            android:text="load"
+            android:textColor="@color/buttonText"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/play_native_ad_button"
+            android:layout_width="@dimen/btn_width"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginLeft="@dimen/btn_margin_horizontal"
+            android:layout_marginRight="@dimen/btn_margin_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/aqua_button_bg"
+            android:text="@string/play_ad"
+            android:textColor="@color/buttonText"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/finish_native_ad_button"
+            android:layout_width="@dimen/btn_width"
+            android:layout_height="@dimen/btn_height"
+            android:layout_marginLeft="@dimen/btn_margin_horizontal"
+            android:layout_marginRight="@dimen/btn_margin_horizontal"
+            android:layout_weight="1"
+            android:background="@drawable/aqua_button_bg"
+            android:text="@string/close"
+            android:textColor="@color/buttonText"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_above="@id/native_ad_button_container"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/outer_native_ad_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/native_ad_container"
+                    layout="@layout/activity_native_ad_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/native_ad_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/outer_native_ad_container" />
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

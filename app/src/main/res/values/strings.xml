@@ -19,6 +19,7 @@
     <string name="placement_id_rewarded_video">DYNAMIC_TEMPLATE_REWARDED-5271535</string>
     <string name="placement_id_mrec">MREC-2191415</string>
     <string name="placement_id_banner">BANNER-5454585</string>
+    <string name="placement_id_native_ad">DEFAULT-2675855</string>
     <string name="placement_id_banner_top">BANNER2-6990728</string>
     <string name="placement_id_banner_middle">MREC-2191415</string>
     <string name="placement_id_banner_bottom">BANNER3-3633049</string>

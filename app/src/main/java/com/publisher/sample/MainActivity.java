@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     final private String rewardedVideo = "rewarded_video";
     final private String mrec = "mrec";
     final private String banner = "banner";
+    final private String nativeAd = "native_ad";
 
     final String LOG_TAG = "VungleSampleApp";
 
@@ -54,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
         vungleAds.add(new VungleAd(rewardedVideo));
         vungleAds.add(new VungleAd(mrec));
         vungleAds.add(new VungleAd(banner));
+
+        final Button nativeAdButton = findViewById(R.id.btn_native);
+        nativeAdButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(NativeAdActivity.getIntent(MainActivity.this));
+            }
+        });
 
         initUiElements();
         initSDK();

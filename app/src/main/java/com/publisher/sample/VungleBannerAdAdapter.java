@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.vungle.warren.AdConfig;
+import com.vungle.warren.BannerAdConfig;
 import com.vungle.warren.Banners;
 import com.vungle.warren.LoadAdCallback;
 import com.vungle.warren.PlayAdCallback;
@@ -91,12 +92,13 @@ public class VungleBannerAdAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         void bind(final String placement) {
             if (canStart()) {
-                final AdConfig.AdSize size = AdConfig.AdSize.BANNER;
-                Banners.loadBanner(placement, size, new LoadAdCallback() {
+                final BannerAdConfig adConfig = new BannerAdConfig();
+                adConfig.setAdSize(AdConfig.AdSize.BANNER);
+                Banners.loadBanner(placement, adConfig, new LoadAdCallback() {
                     @Override
                     public void onAdLoad(String s) {
                         if (canStart()) {
-                            ad = Banners.getBanner(placement, size, playAdCallback);
+                            ad = Banners.getBanner(placement, adConfig, playAdCallback);
                             if (ad != null) {
                                 ad.disableLifeCycleManagement(true);
                                 viewGroup.addView(ad);

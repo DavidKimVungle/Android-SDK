@@ -25,6 +25,7 @@
 
         <activity android:name=".BannerListActivity"/>
         <activity android:name=".BannerMultipleActivity"/>
+        <activity android:name=".NativeAdActivity"/>
 
         <activity
             android:name=".MainActivity"
