@@ -73,7 +73,7 @@
 
                 <include
                     android:id="@+id/native_ad_container"
-                    layout="@layout/activity_native_ad_unit"
+                    layout="@layout/native_ad_unit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </FrameLayout>

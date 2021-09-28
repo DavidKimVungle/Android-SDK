@@ -80,12 +80,14 @@ public class NativeAdActivity extends AppCompatActivity {
         ctaButton = findViewById(R.id.native_ad_call_to_action);
         adChoicesContainer  = findViewById(R.id.ad_choices_container);
 
+        if (vungleNativeAd == null) {
+            vungleNativeAd = new NativeAd(this, getString(R.string.placement_id_native_ad));
+        }
+
         loadAdButton = findViewById(R.id.load_native_ad_button);
         loadAdButton.setOnClickListener(view -> {
-            if (vungleNativeAd == null) {
-                vungleNativeAd = new NativeAd(this, getString(R.string.placement_id_native_ad));
-            }
-
+//            vungleNativeAd.destroy();
+//            vungleNativeAd = new NativeAd(this, getString(R.string.placement_id_native_ad));
             AdConfig adConfig = new AdConfig();
             vungleNativeAd.loadAd(adConfig, vungleNativeAdListener);
         });
@@ -93,6 +95,7 @@ public class NativeAdActivity extends AppCompatActivity {
         playAdButton = findViewById(R.id.play_native_ad_button);
         playAdButton.setOnClickListener(view -> {
             if (vungleNativeAd != null && vungleNativeAd.canPlayAd()) {
+                Log.d(LOG_TAG, Boolean.toString(vungleNativeAd.canPlayAd()));
                 populateNativeAdView(vungleNativeAd);
             }
         });
@@ -132,6 +135,7 @@ public class NativeAdActivity extends AppCompatActivity {
         titleView.setText(nativeAd.getAdTitle());
         bodyView.setText(nativeAd.getAdBodyText());
         rateView.setText(Double.toString(nativeAd.getAdStarRating()));
+//        rateView.setText("4.5");
         sponsoredView.setText(nativeAd.getAdSponsoredText());
         ctaButton.setText(nativeAd.getAdCallToActionText());
         ctaButton.setVisibility(nativeAd.hasCallToAction() ? View.VISIBLE : View.INVISIBLE);
@@ -149,6 +153,7 @@ public class NativeAdActivity extends AppCompatActivity {
         @Override
         public void onNativeAdLoaded(NativeAd nativeAd) {
             nativeAdLog.append("onNativeAdLoaded\n");
+            Log.d(LOG_TAG, "onNativeAdLoaded");
 //            enableButton(playAdButton);
 //            disableButton(loadAdButton);
         }
@@ -156,11 +161,13 @@ public class NativeAdActivity extends AppCompatActivity {
         @Override
         public void onAdLoadError(String s, VungleException e) {
             nativeAdLog.append(String.format("onAdLoadError - %s\n%s\n", s, e.getLocalizedMessage()));
+            Log.d(LOG_TAG, String.format("onAdLoadError - %s\n%s", s, e.getLocalizedMessage()));
         }
 
         @Override
         public void onAdPlayError(String s, VungleException e) {
             nativeAdLog.append(String.format("onAdPlayError - %s\n%s\n", s, e.getLocalizedMessage()));
+            Log.d(LOG_TAG, String.format("onAdLoadError - %\n%s", s, e.getLocalizedMessage()));
 //            disableButton(playAdButton);
 //            disableButton(closeAdButton);
 //            enableButton(loadAdButton);
@@ -169,6 +176,7 @@ public class NativeAdActivity extends AppCompatActivity {
         @Override
         public void onAdStart(String s) {
             nativeAdLog.append(String.format("onAdStart - %s\n", s));
+            Log.d(LOG_TAG, "onAdStart - " + s);
 //            disableButton(playAdButton);
 //            enableButton(closeAdButton);
         }
@@ -176,16 +184,21 @@ public class NativeAdActivity extends AppCompatActivity {
         @Override
         public void onAdViewed(String s) {
             nativeAdLog.append(String.format("onAdViewed - %s\n", s));
+            Log.d(LOG_TAG, "onAdViewed - " + s);
+//            vungleNativeAd.loadAd(new AdConfig(), vungleNativeAdListener);
+//            vungleNativeAd.canPlayAd();
         }
 
         @Override
         public void onAdClick(String s) {
             nativeAdLog.append(String.format("onAdClick - %s\n", s));
+            Log.d(LOG_TAG, "onAdClick - " + s);
         }
 
         @Override
         public void onAdEnd(String s) {
             nativeAdLog.append(String.format("onAdEnd - %s\n", s));
+            Log.d(LOG_TAG, "onAdEnd - " + s);
 //            disableButton(playAdButton);
 //            disableButton(closeAdButton);
 //            enableButton(loadAdButton);
@@ -194,6 +207,7 @@ public class NativeAdActivity extends AppCompatActivity {
         @Override
         public void onAdLeftApplication(String s) {
             nativeAdLog.append(String.format("onAdLeftApplication - %s\n", s));
+            Log.d(LOG_TAG, "onAdLeftApplication - " + s);
         }
     };
 
