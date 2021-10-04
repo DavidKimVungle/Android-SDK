@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.publisher.sample.adapters.BannerAdAdapter;
+
 public class BannerListActivity extends AppCompatActivity {
 
     private static final String PLACEMENT_ID = "placement_id";
@@ -18,7 +20,7 @@ public class BannerListActivity extends AppCompatActivity {
     private static final int POSITION = 20;
 
     private RecyclerView recyclerView;
-    private VungleBannerAdAdapter adapter;
+    private BannerAdAdapter adapter;
 
     public static Intent getIntent(Context ctx, String placementReferenceId) {
         Intent intent = new Intent(ctx, BannerListActivity.class);
@@ -38,7 +40,7 @@ public class BannerListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(manager);
 
         RVAdapter originalAdapter = new RVAdapter(SIZE);
-        adapter = new VungleBannerAdAdapter(placement, POSITION, originalAdapter, null);
+        adapter = new BannerAdAdapter(placement, POSITION, originalAdapter, null);
         recyclerView.setAdapter(adapter);
         recyclerView.setHasFixedSize(true);
     }

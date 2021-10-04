@@ -7,17 +7,17 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="323dp"
-        android:layout_height="56dp"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
         android:layout_weight="1"
-        app:srcCompat="@drawable/liftoff_vungle_full_color_logo" />
+        app:srcCompat="@drawable/liftoff_vungle_native" />
 
     <TextView
         android:id="@+id/tv_id"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:text="TextView"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        android:textSize="18sp" />
+        android:textSize="12sp" />
 </LinearLayout>

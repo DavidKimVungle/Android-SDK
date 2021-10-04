@@ -16,8 +16,8 @@ import com.publisher.sample.adapters.NativeAdAdapter;
 public class NativeAdFeedActivity extends AppCompatActivity {
 
     private static final String PLACEMENT_ID = "placement_id";
-    private static final Integer SIZE = 40;
-    private static final int POSITION = 20;
+    private static final Integer SIZE = 12;
+    private static final int POSITION = 6;
 
     private RecyclerView recyclerView;
     private NativeAdAdapter adapter;
@@ -79,7 +79,7 @@ public class NativeAdFeedActivity extends AppCompatActivity {
 
         @Override
         public int getItemViewType(int position) {
-            return R.layout.rv_item;
+            return R.layout.native_content_item;
         }
     }
 }

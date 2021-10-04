@@ -135,7 +135,6 @@ public class NativeAdActivity extends AppCompatActivity {
         titleView.setText(nativeAd.getAdTitle());
         bodyView.setText(nativeAd.getAdBodyText());
         rateView.setText(Double.toString(nativeAd.getAdStarRating()));
-//        rateView.setText("4.5");
         sponsoredView.setText(nativeAd.getAdSponsoredText());
         ctaButton.setText(nativeAd.getAdCallToActionText());
         ctaButton.setVisibility(nativeAd.hasCallToAction() ? View.VISIBLE : View.INVISIBLE);

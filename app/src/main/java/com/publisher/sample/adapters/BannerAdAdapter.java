@@ -1,4 +1,4 @@
-package com.publisher.sample;
+package com.publisher.sample.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.publisher.sample.R;
 import com.vungle.warren.AdConfig;
 import com.vungle.warren.BannerAdConfig;
 import com.vungle.warren.Banners;
@@ -15,7 +16,7 @@ import com.vungle.warren.PlayAdCallback;
 import com.vungle.warren.VungleBanner;
 import com.vungle.warren.error.VungleException;
 
-public class VungleBannerAdAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class BannerAdAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int BANNED_AD_TYPE = R.layout.ad_item;
     private final String placementId;
     private final int adPosition;
@@ -24,10 +25,10 @@ public class VungleBannerAdAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private VungleBanner ad;
     private boolean destroyed;
 
-    public VungleBannerAdAdapter(@NonNull String placementId,
-                                 int adPosition,
-                                 @NonNull RecyclerView.Adapter originalAdapter,
-                                 @Nullable PlayAdCallback playAdCallback) {
+    public BannerAdAdapter(@NonNull String placementId,
+                           int adPosition,
+                           @NonNull RecyclerView.Adapter originalAdapter,
+                           @Nullable PlayAdCallback playAdCallback) {
         this.placementId = placementId;
         this.adPosition = adPosition;
         this.originalAdapter = originalAdapter;

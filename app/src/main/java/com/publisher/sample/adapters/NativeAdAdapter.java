@@ -1,5 +1,6 @@
 package com.publisher.sample.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NativeAdAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String LOG = "VungleNativeFeed";
+
     private static final int NATIVE_AD_UNIT = R.layout.native_ad_unit;
     private final String placementId;
     private final int adPosition;
@@ -47,8 +50,10 @@ public class NativeAdAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int type) {
         if (type == NATIVE_AD_UNIT) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(type, viewGroup, false);
-            return new NativeAdHolder(view);
+            NativeAdLayout inflatedView = (NativeAdLayout) LayoutInflater
+                    .from(viewGroup.getContext())
+                    .inflate(R.layout.native_ad_unit, viewGroup, false);
+            return new NativeAdHolder(inflatedView);
         }
         return originalAdapter.onCreateViewHolder(viewGroup, type);
     }
@@ -56,30 +61,19 @@ public class NativeAdAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder.getItemViewType() == NATIVE_AD_UNIT) {
+//            NativeAd vungleNativeAd;
             NativeAdHolder adHolder = (NativeAdHolder) holder;
             adHolder.adChoicesContainer.removeAllViews();
 
-            vungleNativeAd = new NativeAd(holder.itemView.getContext(), placementId);
+            vungleNativeAd = new NativeAd(adHolder.itemView.getContext(), placementId);
 
             vungleNativeAd.loadAd(new AdConfig(), new NativeAdListener() {
                 @Override
                 public void onNativeAdLoaded(NativeAd nativeAd) {
-//                    adHolder.outerNativeAdContainer.setVisibility(View.VISIBLE);
-                    NativeAdLayout nativeAdLayout;
-                    View actualView = adHolder.outerNativeAdContainer.getChildAt(0);
-                    if (actualView instanceof NativeAdLayout) {
-                        nativeAdLayout = (NativeAdLayout) actualView;
-                    } else {
-                        nativeAdLayout = new NativeAdLayout(holder.itemView.getContext());
-                        nativeAdLayout.setLayoutParams(new ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                        adHolder.outerNativeAdContainer.removeView(actualView);
-                        nativeAdLayout.addView(actualView);
-                        adHolder.outerNativeAdContainer.addView(nativeAdLayout);
-                    }
+                    NativeAdLayout nativeAdLayout = (NativeAdLayout) adHolder.nativeAdLayout;
 
                     if (adHolder.adChoicesContainer != null) {
-                        adHolder.adOptionsView = new NativeAdOptionsView(holder.itemView.getContext(), vungleNativeAd, nativeAdLayout);
+                        adHolder.adOptionsView = new NativeAdOptionsView(adHolder.itemView.getContext(), vungleNativeAd, nativeAdLayout);
                         adHolder.adChoicesContainer.removeAllViews();
                         adHolder.adChoicesContainer.addView(adHolder.adOptionsView, 0);
                     }
@@ -100,28 +94,41 @@ public class NativeAdAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
 
                 @Override
-                public void onAdLoadError(String s, VungleException e) { }
+                public void onAdLoadError(String s, VungleException e) {
+                    Log.d(LOG, String.format("onAdLoadError - %s\n%s", s, e.getLocalizedMessage()));
+                }
 
                 @Override
-                public void onAdPlayError(String s, VungleException e) { }
+                public void onAdPlayError(String s, VungleException e) {
+                    Log.d(LOG, String.format("onAdLoadError - %\n%s", s, e.getLocalizedMessage()));
+                }
 
                 @Override
-                public void onAdStart(String s) { }
+                public void onAdStart(String s) {
+                    Log.d(LOG, "onAdStart - " + s);
+                }
 
                 @Override
-                public void onAdClick(String s) { }
+                public void onAdViewed(String s) {
+                    Log.d(LOG, "onAdViewed - " + s);
+                }
 
                 @Override
-                public void onAdEnd(String s) { }
+                public void onAdClick(String s) {
+                    Log.d(LOG, "onAdClick - " + s);
+                }
 
                 @Override
-                public void onAdLeftApplication(String s) { }
+                public void onAdEnd(String s) {
+                    Log.d(LOG, "onAdEnd - " + s);
+                }
 
                 @Override
-                public void onAdViewed(String s) { }
+                public void onAdLeftApplication(String s) {
+                    Log.d(LOG, "onAdLeftApplication - " + s);
+                }
             });
         } else {
-            //noinspection unchecked
             originalAdapter.onBindViewHolder(holder, position < adPosition ? position : position - 1);
         }
     }
@@ -155,28 +162,25 @@ public class NativeAdAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private static class NativeAdHolder extends RecyclerView.ViewHolder {
-//        NativeAd vungleNativead;
+        NativeAdLayout nativeAdLayout;
         NativeAdOptionsView adOptionsView;
-        FrameLayout outerNativeAdContainer;
-        TextView nativeAdLog;
         TextView titleView;
         TextView bodyView;
         TextView sponsoredView;
         TextView rateView;
-        ViewGroup adChoicesContainer;
         MediaView adContentView;
         ImageView iconView;
         Button ctaButton;
+        ViewGroup adChoicesContainer;
 
-        NativeAdHolder(View view) {
-            super(view);
-            outerNativeAdContainer = itemView.findViewById(R.id.outer_native_ad_container);
-            nativeAdLog = itemView.findViewById(R.id.native_ad_status);
-            adContentView = itemView.findViewById(R.id.native_ad_media);
+        NativeAdHolder(NativeAdLayout layout) {
+            super(layout);
+            nativeAdLayout = layout;
             titleView = itemView.findViewById(R.id.native_ad_title);
             bodyView = itemView.findViewById(R.id.native_ad_body);
-            rateView = itemView.findViewById(R.id.native_ad_rate);
             sponsoredView = itemView.findViewById(R.id.native_ad_sponsored);
+            rateView = itemView.findViewById(R.id.native_ad_rate);
+            adContentView = itemView.findViewById(R.id.native_ad_media);
             iconView = itemView.findViewById(R.id.native_ad_icon);
             ctaButton = itemView.findViewById(R.id.native_ad_call_to_action);
             adChoicesContainer  = itemView.findViewById(R.id.ad_choices_container);
